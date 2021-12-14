@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="VerilogGrammar.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CFGToolkit.ParserCombinatorGenerator\CFGToolkit.ParserCombinatorGenerator.csproj" />
+  </ItemGroup>
+
+</Project>

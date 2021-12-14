@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Marcin Gołębiowski</Copyright>
+    <Description></Description>
+    <PackageProjectUrl>https://github.com/marcin-golebiowski/CFGToolkit</PackageProjectUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <RepositoryUrl>https://github.com/marcin-golebiowski/CFGToolkit</RepositoryUrl>
+    <PackageTags>parser csharp grammar cfg grammar-parser</PackageTags>
+    <Authors>Marcin Gołębiowski</Authors>
+    <Company>CFGToolkit</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CFGToolkit.ParserCombinator" Version="1.0.0-alpha-4" />
+  </ItemGroup>
+
+</Project>
