@@ -111,7 +111,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
 
                 if (symbol is Empty)
                 {
-                    list.Add("Parse.Return(string.Empty)");
+                    list.Add("Parser.Return(string.Empty)");
                 }
                 if (symbol is ManyExpression many)
                 {
@@ -126,7 +126,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
                     }
                     else if (onlySymbol is Literal)
                     {
-                        list.Add("Parse.String(\"" + (((Literal)onlySymbol).Value) + "\").Text()" + $".Many(greedy: true)" + (noToken ? "" : ".Token()"));
+                        list.Add("Parser.String(\"" + (((Literal)onlySymbol).Value) + "\").Text()" + $".Many(greedy: true)" + (noToken ? "" : ".Token()"));
                     }
                 }
 
@@ -142,7 +142,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
                     }
                     else if (onlySymbol is Literal)
                     {
-                        list.Add("Parse.String(\"" + (((Literal)onlySymbol).Value) + $"\", {tokenized}).Text()" + ".Optional()");
+                        list.Add("Parser.String(\"" + (((Literal)onlySymbol).Value) + $"\", {tokenized}).Text()" + ".Optional()");
                     }
                 }
 
@@ -157,31 +157,31 @@ namespace CFGToolkit.ParserCombinatorGenerator
                 {
                     if (literal.Value.Length > 1)
                     {
-                        list.Add("Parse.String(\"" + (literal.Value) + $"\", {tokenized}).Text()");
+                        list.Add("Parser.String(\"" + (literal.Value) + $"\", {tokenized}).Text()");
                     }
                     else
                     {
                         if (literal.Value == "'")
                         {
-                            list.Add($"Parse.Char('\\'', {tokenized})");
+                            list.Add($"Parser.Char('\\'', {tokenized})");
                         }
                         else
                         {
-                            list.Add("Parse.Char('" + (literal.Value) + $"', {tokenized})");
+                            list.Add("Parser.Char('" + (literal.Value) + $"', {tokenized})");
                         }                        
                     }
                 }
 
                 if (symbol is Pattern pattern)
                 {
-                    list.Add("Parse.Regex(\"" + pattern.Value + "\")" + (noToken ? "" : ".Token()"));
+                    list.Add("Parser.Regex(\"" + pattern.Value + "\")" + (noToken ? "" : ".Token()"));
                 }
 
                 count++;
             }
 
             StringBuilder result = new StringBuilder();
-            result.Append("Parse.Sequence<CharToken, SyntaxNode>(\"" + GetParserName(production.Name.Value) +  "#" + index + "\", ");
+            result.Append("Parser.Sequence<CharToken, SyntaxNode>(\"" + GetParserName(production.Name.Value) +  "#" + index + "\", ");
             result.Append($"(args) => CreateSyntaxNode({tokenized}, nameof(" + GetParserName(production.Name.Value) + "), args), ");
 
             for (var i = 0; i < count; i++)
