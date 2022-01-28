@@ -17,6 +17,7 @@ namespace CFGToolkit.Grammar.Readers.VerilogEBNF
         private static IParser<CharToken, string> LiteralWithoutQuotes = Parser.RegexExt(@"[^ \{\}\|\[\]\r\n]+", val => !g.IsIdentifier(val));
 
         private static IParser<CharToken, string> Pattern = Parser.RegexExt(@"\[[^\r\n \|]+\]", val => !g.IsIdentifier(val.Trim('[', ']')));
+        private static IParser<CharToken, string> PatternExplicit = Parser.Regex(@"[^\r\n]*");
 
         private static IParser<CharToken, OptionalExpression> OptionalExpression(HashSet<string> attributes)
         {
@@ -47,7 +48,7 @@ namespace CFGToolkit.Grammar.Readers.VerilogEBNF
         {
             if (attributes.Contains("pattern"))
             {
-                return LiteralWithQuotes.Select(a => new Expression { Symbols = new List<ISymbol> { new Pattern() { Value = a.Substring(1, a.Length - 2) } } });
+                return PatternExplicit.Select(a => new Expression { Symbols = new List<ISymbol> { new Pattern() { Value = a } } });
             }
             else
             {

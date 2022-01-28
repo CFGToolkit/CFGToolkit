@@ -10,7 +10,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
         public string GenerateFile(string @namespace, string className, Grammar.Grammar grammar)
         {
             string result =
-                $@"using NVerilogParser.AST;
+                $@"using CFGToolkit.AST;
 using CFGToolkit.ParserCombinator;
 using CFGToolkit.ParserCombinator.Input;
 using CFGToolkit.ParserCombinator.Values;
@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace {@namespace}
 {{
-    public class {className}
+    public partial class {className}
     {{
 {CreateParsers(grammar)}
     }}
