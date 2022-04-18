@@ -76,7 +76,7 @@ namespace CFGToolkit.Grammar.Algorithms.Reductions
 
             if (alfaProductions.Any())
             {
-                var alfaNewProduction = new Production() { Name = new ProductionIdentifier(productionName), Attributes = new HashSet<string>(production.Attributes) };
+                var alfaNewProduction = new Production() { Name = new ProductionIdentifier(productionName), Tags = new Dictionary<string, string>(production.Tags) };
 
                 foreach (var beta in betaProductions)
                 {
@@ -84,7 +84,7 @@ namespace CFGToolkit.Grammar.Algorithms.Reductions
                     alfaNewProduction.Alternatives.Add(betaExpression);
                 }
 
-                var alfaPrimProduction = new Production() { Name = new ProductionIdentifier(productionName + "_prim"), Attributes = new HashSet<string>(production.Attributes) };
+                var alfaPrimProduction = new Production() { Name = new ProductionIdentifier(productionName + "_prim"), Tags = new Dictionary<string, string>(production.Tags) };
                 foreach (var alfa in alfaProductions)
                 {
                     var alfaExpression = new Expression(alfa.Symbols.Skip(1), new ProductionIdentifier(alfaPrimProduction.Name.Value));

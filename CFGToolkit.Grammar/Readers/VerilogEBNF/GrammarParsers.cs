@@ -19,63 +19,71 @@ namespace CFGToolkit.Grammar.Readers.VerilogEBNF
         private static IParser<CharToken, string> Pattern = Parser.RegexExt(@"\[[^\r\n \|]+\]", val => !g.IsIdentifier(val.Trim('[', ']')));
         private static IParser<CharToken, string> PatternExplicit = Parser.Regex(@"[^\r\n]*");
 
-        private static IParser<CharToken, OptionalExpression> OptionalExpression(HashSet<string> attributes)
+        private static IParser<CharToken, OptionalExpression> OptionalExpression(Dictionary<string, string> tags)
         {
             return from a in Parser.Char('[').TokenWithoutNewLines()
-                   from b in Expressions(attributes)
+                   from b in Expressions(tags)
                    from c in Parser.Char(']').TokenWithoutNewLines()
                    select new OptionalExpression() { Inside = b };
         }
 
-        public static IParser<CharToken, ManyExpression> RepeatedExpression(HashSet<string> attributes)
+        public static IParser<CharToken, ManyExpression> RepeatedExpression(Dictionary<string, string> tags)
         {
             return from a in Parser.Char('{').TokenWithoutNewLines()
-                   from b in Expressions(attributes)
+                   from b in Expressions(tags)
                    from c in Parser.Char('}').TokenWithoutNewLines()
                    select new ManyExpression() { Inside = b };
         }
 
 
-        public static IParser<CharToken, ISymbol> Symbol(HashSet<string> attributes) =>
+        public static IParser<CharToken, ISymbol> Symbol(Dictionary<string, string> tags) =>
             Pattern.Select(a => (ISymbol)new Pattern { Value = a })
-            .XOr(OptionalExpression(attributes).Cast<CharToken, ISymbol, OptionalExpression>())
-            .XOr(RepeatedExpression(attributes).Cast<CharToken, ISymbol, ManyExpression>())
+            .XOr(OptionalExpression(tags).Cast<CharToken, ISymbol, OptionalExpression>())
+            .XOr(RepeatedExpression(tags).Cast<CharToken, ISymbol, ManyExpression>())
             .XOr(Identifier.Select(a => (ISymbol)new ProductionIdentifier(a)))
             .XOr(LiteralWithQuotes.Select(a => (ISymbol)new Literal(a.Substring(1, a.Length - 2))))
             .XOr(LiteralWithoutQuotes.Select(a => (ISymbol)new Literal(a)));
 
-        public static IParser<CharToken, Expression> Expression(HashSet<string> attributes)
+        public static IParser<CharToken, Expression> Expression(Dictionary<string, string> tags)
         {
-            if (attributes.Contains("pattern"))
+            if (tags.ContainsKey("pattern"))
             {
                 return PatternExplicit.Select(a => new Expression { Symbols = new List<ISymbol> { new Pattern() { Value = a } } });
             }
             else
             {
-                return Symbol(attributes).TokenWithoutNewLines().Many().Select(p => new Expression() { Symbols = new List<ISymbol>(p) });
+                return Symbol(tags).TokenWithoutNewLines().Many().Select(p => new Expression() { Symbols = new List<ISymbol>(p) });
             }
         }
 
-        private static IParser<CharToken, Expressions> Expressions(HashSet<string> attributes)
-            => Expression(attributes)
+        private static IParser<CharToken, Expressions> Expressions(Dictionary<string, string> tags)
+            => Expression(tags)
                 .DelimitedBy(Parser.String("|").Token())
                 .Select(p => new Expressions(p));
 
-        public static IParser<CharToken, string> ProductionAttribute =
+        public static IParser<CharToken, KeyValuePair<string, string>> ProductionTag = (
             from start in Parser.Char('[')
-            from name in Parser.AnyChar().Except(Parser.Char(']')).Many().Text()
+            from name in Parser.AnyChar().Except(Parser.Char(']').Or(Parser.Char('='))).Many().Text()
             from end in Parser.Char(']')
-            select name;
+            select new KeyValuePair<string, string>(name, null))
+            .Or(
+                from start in Parser.Char('[')
+                from name in Parser.AnyChar().Except(Parser.Char(']').Or(Parser.Char('='))).Many().Text()
+                from _ in Parser.Char('=')
+                from value in Parser.AnyChar().Except(Parser.Char(']').Or(Parser.Char('='))).Many().Text()
+                from end in Parser.Char(']')
+                select new KeyValuePair<string, string>(name, value)
+            ).Named(nameof(ProductionTag));
 
         public static IParser<CharToken, Production> Production =
             from name in Identifier
-            from attributes in ProductionAttribute.Many()
+            from tags in ProductionTag.Many()
             from spaces1 in Parser.WhiteSpace.Many()
             from equal in Parser.String("::=")
             from spaces2 in Parser.WhiteSpace.Many()
-            from expressions in Expressions(new HashSet<string>(attributes))
+            from expressions in Expressions(tags.ToDictionary(i => i.Key, i => i.Value))
             from linesEnd in Parser.LineEnd.Many().Token()
-            select new Production() { Attributes = new HashSet<string>(attributes), Name = new ProductionIdentifier(name), Alternatives = expressions };
+            select new Production() { Tags = new Dictionary<string, string>(tags), Name = new ProductionIdentifier(name), Alternatives = expressions };
 
         public static IParser<CharToken, Comment> Comment =
             from _1 in Parser.String("//")

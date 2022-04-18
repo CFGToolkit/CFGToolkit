@@ -16,7 +16,7 @@ namespace CFGToolkit.Grammar.Algorithms.Reductions
                     var newProductionIdentifier = new ProductionIdentifier(NameProvider.GetUniqueName(production.Name.Value + "_many"));
                     newAlternative.Symbols.Add(new ManyExpression() { Inside = new Expressions(new Expression(newProductionIdentifier)) });
 
-                    var newProduction = new Production() { Name = newProductionIdentifier };
+                    var newProduction = new Production() { Name = newProductionIdentifier, Tags = production.Tags};
 
                     newProduction.Alternatives.AddRange(many.Inside);
 

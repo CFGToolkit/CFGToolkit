@@ -22,11 +22,29 @@ namespace {@namespace}
     public partial class {className}
     {{
 {CreateParsers(grammar)}
+
+        public class NonTerminals
+        {{
+{GenerateNonTerminals(grammar)}
+        }}
+
     }}
 }}";
 
             return result;
 
+        }
+
+        private string GenerateNonTerminals(Grammar.Grammar grammar)
+        {
+            var builder = new StringBuilder();
+
+            foreach (var production in grammar.Productions)
+            {
+                builder.AppendLine(Repeat(" ", 12) + "public const string " + production.Key + " = \"" + production.Key + "\";");
+            }
+
+            return builder.ToString();
         }
 
         private string CreateParsers(Grammar.Grammar grammar)

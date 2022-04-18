@@ -9,15 +9,24 @@ namespace CFGToolkit.Grammar.Readers.VerilogEBNF
     public class PreprocessorParsers
     {
         public static IParser<CharToken, string> Identifier = Parser.Regex(@"[$A-Z_a-z][\-0-9A-Z_a-z]*").Named(nameof(Identifier));
-        public static IParser<CharToken, string> ProductionAttribute = (
+        
+        public static IParser<CharToken, KeyValuePair<string, string>> ProductionTag = (
             from start in Parser.Char('[')
-            from name in Parser.AnyChar().Except(Parser.Char(']')).Many().Text()
+            from name in Parser.AnyChar().Except(Parser.Char(']').Or(Parser.Char('='))).Many().Text()
             from end in Parser.Char(']')
-            select name).Named(nameof(ProductionAttribute));
+            select new KeyValuePair<string,string>(name, null))
+            .Or(
+                from start in Parser.Char('[')
+                from name in Parser.AnyChar().Except(Parser.Char(']').Or(Parser.Char('='))).Many().Text()
+                from _ in Parser.Char('=')
+                from value in Parser.AnyChar().Except(Parser.Char(']').Or(Parser.Char('='))).Many().Text()
+                from end in Parser.Char(']')
+                select new KeyValuePair<string, string>(name, value)
+            ).Named(nameof(ProductionTag));
 
         public static IParser<CharToken, string> Production =
             (from name in Identifier
-             from attributes in ProductionAttribute.Many()
+             from tags in ProductionTag.Many()
              from spaces1 in Parser.WhiteSpace.Many()
              from equal in Parser.String("::=")
              from spaces2 in Parser.WhiteSpace.Many()

@@ -37,7 +37,6 @@ namespace CFGToolkit.ParserCombinatorGenerator
                 result.Add(GenerateRegexParser(regexParser.Key, regexParser.Value));
             }
 
-
             return result;
         }
 
@@ -45,6 +44,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
         {
             StringBuilder logic = new StringBuilder();
             logic.Append("Parser.Regex(\"" + (parser.Item1) + $"\", {parser.Item2.ToString().ToLower()}).Cached({parser.Item3})");
+            logic.Append(@".Tag(""keyword"")");
             return new ClassStaticMember { Name = name, Logic = "  new Lazy<IParser<CharToken, string>>(() => " + logic.ToString() + ");", Type = "Lazy<IParser<CharToken, string>>" };
         }
 
@@ -53,6 +53,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
         {
             StringBuilder logic = new StringBuilder();
             logic.Append("Parser.String(\"" + (parser.Item1) + $"\", true).Cached({parser.Item3})");
+            logic.Append(@".Tag(""keyword"")");
             return new ClassStaticMember { Name = name, Logic = "  new Lazy<IParser<CharToken, string>>(() => " + logic.ToString() + ");", Type = "Lazy<IParser<CharToken, string>>" };
         }
 
@@ -65,6 +66,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
                 parser.Item1 = "\'";
             }
             logic.Append("Parser.Char('" + (parser.Item1) + $"', true).Cached({parser.Item3})");
+            logic.Append(@".Tag(""keyword"")");
             return new ClassStaticMember { Name = name, Logic = "  new Lazy<IParser<CharToken, char>>(() => " + logic.ToString() + ");", Type = "Lazy<IParser<CharToken, char>>" };
         }
 
@@ -72,7 +74,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
         {
             StringBuilder logic = new StringBuilder();
             int index = 0;
-            bool isXor = production.Attributes.Contains("xor");
+            bool isXor = production.Tags.ContainsKey("xor");
 
             if (production.Alternatives.Count == 1)
             {
@@ -110,8 +112,8 @@ namespace CFGToolkit.ParserCombinatorGenerator
 
         private string GenerateParserLogic(Grammar.Grammar grammar, Production production, Expression expression, int index, bool single)
         {
-            bool nodeTokenize = production.Attributes.Contains("nodeTokenize");
-            bool tokenTokenize = !production.Attributes.Contains("!tokenTokenize");
+            bool nodeTokenize = production.Tags.ContainsKey("nodeTokenize");
+            bool tokenTokenize = !production.Tags.ContainsKey("!tokenTokenize");
 
             int count = 0;
             var list = new List<string>();
@@ -130,7 +132,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
 
                     if (onlySymbol is ProductionIdentifier o)
                     {
-                        string greedy = grammar.Productions[o.Value].Attributes.Contains("lazy") ? "false" : "true";
+                        string greedy = grammar.Productions[o.Value].Tags.ContainsKey("lazy") ? "false" : "true";
                         list.Add(Ref(GetParserName((o.Value))) + $".Many(greedy: {greedy})");
                     }
                     else
@@ -144,7 +146,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
                     var onlySymbol = optional.Inside.ToArray()[0].Symbols[0];
                     if (onlySymbol is ProductionIdentifier o)
                     {
-                        string greedy = grammar.Productions[o.Value].Attributes.Contains("greedy") ? "true" : "false";
+                        string greedy = grammar.Productions[o.Value].Tags.ContainsKey("greedy") ? "true" : "false";
 
                         list.Add(Ref(GetParserName((o.Value))) + $".Optional(greedy: true)");
                     }
@@ -199,6 +201,20 @@ namespace CFGToolkit.ParserCombinatorGenerator
                 result.Append(".Token()");
             }
 
+            foreach (var tag in production.Tags)
+            {
+                if (tag.Value != null)
+                {
+                    result.Append($@".Tag(""{tag.Key}"", ""{tag.Value}"")");
+                }
+                else
+                {
+                    result.Append($@".Tag(""{tag.Key}"")");
+                }
+            }
+
+            result.Append($@".Tag(""index"", ""{index}"")");
+            result.Append($@".Tag(""nt"", NonTerminals." + production.Name + ")");
             return result.ToString();
         }
         private static string Ref(string productionName)

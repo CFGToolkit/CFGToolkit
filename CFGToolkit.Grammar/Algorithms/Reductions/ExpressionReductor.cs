@@ -44,7 +44,7 @@ namespace CFGToolkit.Grammar.Algorithms.Reductions
             {
                 var item = queue.Dequeue();
 
-                var cleanedProduction = new Production() { Name = item.Name, Attributes = new HashSet<string>(production.Attributes) };
+                var cleanedProduction = new Production() { Name = item.Name, Tags = new Dictionary<string, string>(production.Tags) };
 
                 foreach (var alternative in item.Alternatives)
                 {

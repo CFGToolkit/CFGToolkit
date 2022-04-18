@@ -22,7 +22,7 @@ namespace CFGToolkit.Grammar.Algorithms.Reductions
                     }
 
                     newAlternative.Symbols.Add(newProductionIdentifier);
-                    var newProduction = new Production() { Name = newProductionIdentifier, Attributes = new HashSet<string>(production.Attributes) };
+                    var newProduction = new Production() { Name = newProductionIdentifier, Tags = new Dictionary<string, string>(production.Tags) };
                     newProduction.Alternatives.AddRange(many.Inside.Select(exp => new Expression(exp.Symbols, newProductionIdentifier)));
                     newProduction.Alternatives.Add(new Expression(new Empty()));
                     queue.Enqueue(newProduction);

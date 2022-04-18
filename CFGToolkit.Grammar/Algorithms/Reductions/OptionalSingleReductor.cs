@@ -16,7 +16,7 @@ namespace CFGToolkit.Grammar.Algorithms.Reductions
                     var newProductionIdentifier = new ProductionIdentifier(NameProvider.GetUniqueName(production.Name.Value + "_optional"));
                     newAlternative.Symbols.Add(new OptionalExpression() { Inside = new Expressions(new Expression(newProductionIdentifier)) });
 
-                    var newProduction = new Production() { Name = newProductionIdentifier };
+                    var newProduction = new Production() { Name = newProductionIdentifier, Tags = new Dictionary<string, string>(production.Tags) };
 
                     newProduction.Alternatives.AddRange(opt.Inside);
 
