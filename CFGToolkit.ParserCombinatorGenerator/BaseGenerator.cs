@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using CFGToolkit.GrammarDefinition;
+using System.Collections.Generic;
 using System.Text;
 
 namespace CFGToolkit.ParserCombinatorGenerator
 {
     public abstract class BaseGenerator
     {
-        public abstract List<ClassStaticMember> GeneratePasers(Grammar.Grammar grammar);
+        public abstract List<ClassStaticMember> GeneratePasers(Grammar grammar);
 
-        public string GenerateFile(string @namespace, string className, Grammar.Grammar grammar)
+        public string GenerateFile(string @namespace, string className, Grammar grammar)
         {
             string result =
                 $@"using CFGToolkit.AST;
@@ -35,19 +36,19 @@ namespace {@namespace}
 
         }
 
-        private string GenerateNonTerminals(Grammar.Grammar grammar)
+        private string GenerateNonTerminals(Grammar grammar)
         {
             var builder = new StringBuilder();
 
             foreach (var production in grammar.Productions)
             {
-                builder.AppendLine(Repeat(" ", 12) + "public const string " + production.Key + " = \"" + production.Key + "\";");
+                builder.AppendLine(Repeat(" ", 12) + "public const string " + GetParserName(production.Key) + " = \"" + production.Key + "\";");
             }
 
             return builder.ToString();
         }
 
-        private string CreateParsers(Grammar.Grammar grammar)
+        private string CreateParsers(Grammar grammar)
         {
             var builder = new StringBuilder();
 
@@ -77,6 +78,22 @@ namespace {@namespace}
             }
 
             return result;
+        }
+        protected static string GetParserName(string productionName)
+        {
+            var s = productionName.Replace("[pattern]", "");
+
+            if (s == "string")
+            {
+                s = "@" + s;
+            }
+
+            if (s.StartsWith("$"))
+            {
+                s = s.Substring(1);
+            }
+
+            return s;
         }
     }
 }

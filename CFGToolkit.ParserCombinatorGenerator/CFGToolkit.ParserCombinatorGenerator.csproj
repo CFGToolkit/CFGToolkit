@@ -7,10 +7,14 @@
     <Authors>Marcin Gołębiowski</Authors>
     <Company>CFGToolkit</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/CFGToolkit</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/CFGToolkit/CFGToolkit</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/CFGToolkit/CFGToolkit.ParserCombinatorGenerator</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/CFGToolkit/CFGToolkit.ParserCombinatorGenerator</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CFGToolkit.GrammarDefinition" Version="1.0.0-alpha-01" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CFGToolkit.Grammar\CFGToolkit.Grammar.csproj" />

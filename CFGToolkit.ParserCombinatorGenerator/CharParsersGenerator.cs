@@ -1,4 +1,5 @@
-﻿using CFGToolkit.Grammar.Structure;
+﻿using CFGToolkit.GrammarDefinition;
+using CFGToolkit.GrammarDefinition.Structure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
         private Dictionary<string, (string, bool, long)> _regexParsers = new Dictionary<string, (string, bool, long)>();
         private HashSet<long> _usedIds = new HashSet<long>();
 
-        public override List<ClassStaticMember> GeneratePasers(Grammar.Grammar grammar)
+        public override List<ClassStaticMember> GeneratePasers(Grammar grammar)
         {
             var result = new List<ClassStaticMember>();
 
@@ -70,7 +71,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
             return new ClassStaticMember { Name = name, Logic = "  new Lazy<IParser<CharToken, char>>(() => " + logic.ToString() + ");", Type = "Lazy<IParser<CharToken, char>>" };
         }
 
-        private ClassStaticMember GenerateParser(Grammar.Grammar grammar, Production production)
+        private ClassStaticMember GenerateParser(Grammar grammar, Production production)
         {
             StringBuilder logic = new StringBuilder();
             int index = 0;
@@ -110,7 +111,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
             return new ClassStaticMember { Name = GetParserName(production.Name.Value), Logic = "  new Lazy<IParser<CharToken, SyntaxNode>>(() => " + logic.ToString() +");", Type = "Lazy<IParser<CharToken, SyntaxNode>>" };
         }
 
-        private string GenerateParserLogic(Grammar.Grammar grammar, Production production, Expression expression, int index, bool single)
+        private string GenerateParserLogic(Grammar grammar, Production production, Expression expression, int index, bool single)
         {
             bool nodeTokenize = production.Tags.ContainsKey("nodeTokenize");
             bool tokenTokenize = !production.Tags.ContainsKey("!tokenTokenize");
@@ -214,29 +215,14 @@ namespace CFGToolkit.ParserCombinatorGenerator
             }
 
             result.Append($@".Tag(""index"", ""{index}"")");
-            result.Append($@".Tag(""nt"", NonTerminals." + production.Name + ")");
+            result.Append($@".Tag(""nt"", NonTerminals." + GetParserName(production.Name.Value) + ")");
             return result.ToString();
         }
         private static string Ref(string productionName)
         {
             return $"{productionName}.Value";
         }
-        private static string GetParserName(string productionName)
-        {
-            var s = productionName.Replace("[pattern]", "");
 
-            if (s == "string")
-            {
-                s = "@" + s;
-            }
-
-            if (s.StartsWith("$"))
-            {
-                s = s.Substring(1);
-            }
-
-            return s;
-        }
         private string GetStringParser(string keyword, bool tokenize)
         {
             var name = GetKeywordParserName(keyword, tokenize, out var hash);

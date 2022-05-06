@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,6 +7,10 @@
 
   <ItemGroup>
     <None Remove="VerilogGrammar.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CFGToolkit.GrammarDefinition" Version="1.0.0-alpha-01" />
   </ItemGroup>
 
   <ItemGroup>

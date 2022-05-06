@@ -1,5 +1,6 @@
-﻿using CFGToolkit.Grammar.Algorithms.Finders;
-using CFGToolkit.Grammar.Algorithms.Reductions;
+﻿using CFGToolkit.GrammarDefinition;
+using CFGToolkit.GrammarDefinition.Algorithms.Finders;
+using CFGToolkit.GrammarDefinition.Algorithms.Reductions;
 using CFGToolkit.ParserCombinatorGenerator;
 using System.Diagnostics;
 using System.IO;
@@ -26,14 +27,14 @@ namespace CFGToolkit.ParserCombinatorGeneratorConsole
             Stopwatch s = new Stopwatch();
             s.Start();
 
-            Grammar.Grammar grammar = null;
+            Grammar grammar = null;
             switch (type)
             {
                 case "VerilogAMS":
-                    grammar = new Grammar.Readers.VerilogEBNF.Reader().Read(txt);
+                    grammar = new GrammarDefinition.Readers.VerilogEBNF.Reader().Read(txt);
                     break;
                 case "w3c":
-                    grammar = new Grammar.Readers.W3CEBNF.Reader().Read(txt);
+                    grammar = new GrammarDefinition.Readers.W3CEBNF.Reader().Read(txt);
                     break;
                 default:
                     System.Console.WriteLine("Unknown type of parser. Allowed values: VerilogAMS and w3c");
