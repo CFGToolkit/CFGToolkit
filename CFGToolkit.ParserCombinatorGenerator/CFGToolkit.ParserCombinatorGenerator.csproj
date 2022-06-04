@@ -10,14 +10,11 @@
     <PackageProjectUrl>https://github.com/CFGToolkit/CFGToolkit.ParserCombinatorGenerator</PackageProjectUrl>
     <RepositoryUrl>https://github.com/CFGToolkit/CFGToolkit.ParserCombinatorGenerator</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
+    <Version>1.0.0-alpha-01</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CFGToolkit.GrammarDefinition" Version="1.0.0-alpha-01" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CFGToolkit.Grammar\CFGToolkit.Grammar.csproj" />
+    <PackageReference Include="CFGToolkit.GrammarDefinition" Version="1.0.0-alpha-03" />
   </ItemGroup>
 
 </Project>

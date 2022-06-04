@@ -51,8 +51,12 @@ namespace CFGToolkit.ParserCombinatorGeneratorConsole
             var withoutLeft = leftReductor.Reduct(reducted, p => lefts.Contains(p));
             var emptyReductor = new EmptyReductor();
 
+            //var withoutEmpty = emptyReductor.Reduct(withoutLeft);
+            var withPrefixReductor = new PrefixReductor();
+            var withPrefix = withPrefixReductor.Reduct(withoutLeft);
+
             var generator = new CharParsersGenerator();
-            var @class = generator.GenerateFile(@namespace, @className, withoutLeft);
+            var @class = generator.GenerateFile(@namespace, @className, withPrefix);
 
             string outputPath = path + ".generated.cs";
             File.WriteAllText(outputPath, @class);

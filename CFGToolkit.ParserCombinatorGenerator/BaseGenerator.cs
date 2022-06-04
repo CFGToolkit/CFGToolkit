@@ -15,8 +15,10 @@ namespace CFGToolkit.ParserCombinatorGenerator
 using CFGToolkit.ParserCombinator;
 using CFGToolkit.ParserCombinator.Input;
 using CFGToolkit.ParserCombinator.Values;
+using CFGToolkit.ParserCombinator.Parsers;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace {@namespace}
 {{
