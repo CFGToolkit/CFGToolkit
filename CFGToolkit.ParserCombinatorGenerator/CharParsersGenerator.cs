@@ -46,16 +46,16 @@ namespace CFGToolkit.ParserCombinatorGenerator
             StringBuilder logic = new StringBuilder();
             logic.Append("Parser.Regex(\"" + (parser.Item1) + $"\", {parser.Item2.ToString().ToLower()}).Cached({parser.Item3})");
             logic.Append(@".Tag(""keyword"")");
-            return new ClassStaticMember { Name = name, Logic = "  new ThreadLocal<IParser<CharToken, string>>(() => " + logic.ToString() + ");", Type = "ThreadLocal<IParser<CharToken, string>>" };
+            return new ClassStaticMember { Name = name, Logic = "  new Lazy<IParser<CharToken, string>>(() => " + logic.ToString() + ");", Type = "Lazy<IParser<CharToken, string>>" };
         }
 
 
         private ClassStaticMember GenerateStringParser(string name, (string, bool, long) parser)
         {
             StringBuilder logic = new StringBuilder();
-            logic.Append("Parser.String(\"" + (parser.Item1) + $"\", true).Cached({parser.Item3})");
+            logic.Append("Parser.String(\"" + (parser.Item1) + $"\", true)");
             logic.Append(@".Tag(""keyword"")");
-            return new ClassStaticMember { Name = name, Logic = "  new ThreadLocal<IParser<CharToken, string>>(() => " + logic.ToString() + ");", Type = "ThreadLocal<IParser<CharToken, string>>" };
+            return new ClassStaticMember { Name = name, Logic = "  new Lazy<IParser<CharToken, string>>(() => " + logic.ToString() + ");", Type = "Lazy<IParser<CharToken, string>>" };
         }
 
         private ClassStaticMember GenerateCharParser(string name, (string, bool, long) parser)
@@ -66,9 +66,9 @@ namespace CFGToolkit.ParserCombinatorGenerator
             {
                 parser.Item1 = "\'";
             }
-            logic.Append("Parser.Char('" + (parser.Item1) + $"', true).Cached({parser.Item3})");
+            logic.Append("Parser.Char('" + (parser.Item1) + $"', true)");
             logic.Append(@".Tag(""keyword"")");
-            return new ClassStaticMember { Name = name, Logic = "  new ThreadLocal<IParser<CharToken, char>>(() => " + logic.ToString() + ");", Type = "ThreadLocal<IParser<CharToken, char>>" };
+            return new ClassStaticMember { Name = name, Logic = "  new Lazy<IParser<CharToken, char>>(() => " + logic.ToString() + ");", Type = "Lazy<IParser<CharToken, char>>" };
         }
 
         private ClassStaticMember GenerateParser(Grammar grammar, Production production)
@@ -112,7 +112,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
                 logic.Append(")");
             }
 
-            return new ClassStaticMember { Name = GetParserName(production.Name.Value), Logic = "  new ThreadLocal<IParser<CharToken, SyntaxNode>>(() => " + logic.ToString() +");", Type = "ThreadLocal<IParser<CharToken, SyntaxNode>>" };
+            return new ClassStaticMember { Name = GetParserName(production.Name.Value), Logic = "  new Lazy<IParser<CharToken, SyntaxNode>>(() => " + logic.ToString() +");", Type = "Lazy<IParser<CharToken, SyntaxNode>>" };
         }
 
         private string GenerateParserLogic(Grammar grammar, Production production, Expression expression, int index, bool single)
@@ -192,7 +192,7 @@ namespace CFGToolkit.ParserCombinatorGenerator
 
             for (var i = 0; i < count; i++)
             {
-                result.Append("new ThreadLocal<IParser<CharToken>>(() => " + list[i]);
+                result.Append("new Lazy<IParser<CharToken>>(() => " + list[i]);
                 if (i != count - 1)
                 {
                     result.Append("), ");

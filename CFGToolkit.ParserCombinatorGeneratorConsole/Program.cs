@@ -30,8 +30,8 @@ namespace CFGToolkit.ParserCombinatorGeneratorConsole
             Grammar grammar = null;
             switch (type)
             {
-                case "VerilogAMS":
-                    grammar = new GrammarDefinition.Readers.VerilogEBNF.Reader().Read(txt);
+                case "bnf":
+                    grammar = new GrammarDefinition.Readers.BNF.Reader().Read(txt);
                     break;
                 case "w3c":
                     grammar = new GrammarDefinition.Readers.W3CEBNF.Reader().Read(txt);
@@ -51,7 +51,6 @@ namespace CFGToolkit.ParserCombinatorGeneratorConsole
             var withoutLeft = leftReductor.Reduct(reducted, p => lefts.Contains(p));
             var emptyReductor = new EmptyReductor();
 
-            //var withoutEmpty = emptyReductor.Reduct(withoutLeft);
             var withPrefixReductor = new PrefixReductor();
             var withPrefix = withPrefixReductor.Reduct(withoutLeft);
 
