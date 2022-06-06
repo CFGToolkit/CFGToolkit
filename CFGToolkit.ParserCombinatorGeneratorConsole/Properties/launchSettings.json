@@ -2,7 +2,7 @@
   "profiles": {
     "CFGToolkit.Console": {
       "commandName": "Project",
-      "commandLineArgs": "\"VerilogGrammar.txt\" VerilogAMS \"NVerilogParser\" \"Parsers\"",
+      "commandLineArgs": "\"VerilogGrammar.txt\" bnf \"NVerilogParser\" \"Parsers\"",
       "workingDirectory": "C:\\dev"
     }
   }

@@ -37,7 +37,7 @@ namespace CFGToolkit.ParserCombinatorGeneratorConsole
                     grammar = new GrammarDefinition.Readers.W3CEBNF.Reader().Read(txt);
                     break;
                 default:
-                    System.Console.WriteLine("Unknown type of parser. Allowed values: VerilogAMS and w3c");
+                    System.Console.WriteLine("Unknown type of parser. Allowed values: bnf and w3c");
                     return;
             }
 
